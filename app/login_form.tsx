@@ -1,35 +1,36 @@
-import { useState } from "react";
-import { Dimensions, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 
-const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const { width } = Dimensions.get('window');
+const LoginForm = ({ username , setUsername, password, setPassword, errorMessage } :
+    { username: string;
+      setUsername: (username: string) => void;
+      password: string;
+      setPassword: (password: string) => void;
+      errorMessage: string;
+    }
+) => {
 
-    const handleEmailChange = (newEmail: string) => {
-        setEmail(newEmail);
-    };
-    const handlePasswordChange = (newPassword: string) => {
-        setPassword(newPassword);
-    };
     return (
         <View style={styles.formGroup}>
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>Nom d'utilisateur</Text>
             <TextInput
-                placeholder="Email"
-                onChangeText={handleEmailChange}
-                value={email}
+                placeholder="3 caractères min"
+                onChangeText={setUsername}
+                value={username}
                 style={styles.input}
+                autoCapitalize="none"
             />
 
             <Text style={styles.label}>Mot de passe</Text>
             <TextInput
-                placeholder="Mot de passe"
-                onChangeText={handlePasswordChange}
+                placeholder="8 caractères min"
+                onChangeText={setPassword}
                 value={password}
                 style={styles.input}
                 secureTextEntry
             />
+            {errorMessage.length > 0 && (
+                <Text style={{ color: 'red', marginTop: 8 }}>{errorMessage}</Text>
+            )}
 
         </View>
     );
