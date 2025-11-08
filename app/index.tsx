@@ -11,7 +11,6 @@ export default function LoginScreen() {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
-    const myapiUrl = '';
 
     const handleLogin = async () => {
             if (username.length < 3) {
@@ -34,7 +33,11 @@ export default function LoginScreen() {
             });
 
             /*try {
-                const reponse = await fetch(`${myapiUrl}/login`, {
+                const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+                if (!apiUrl) {
+                    throw new Error("L'URL de l'API n'est pas définie.");
+                }
+                const reponse = await fetch(`${apiUrl}/login`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ username, password }),
@@ -46,8 +49,15 @@ export default function LoginScreen() {
                 }
                 const data = await reponse.json();
                 const token = data.token;
-                setLoading(false);
-                return true;
+                if (token) {
+                    await SecureStore.setItemAsync('userToken', token);
+                    setLoading(false);
+                    return true;
+                } else {
+                    setErrorMessage("Nom d'utilisateur ou mot de passe incorrect.");
+                    setLoading(false);
+                    return false;
+                }
             } catch (error) {
                 setErrorMessage("Probleme de serveur. Veuillez reessayer plus tard.");
                 setLoading(false);
@@ -86,6 +96,7 @@ export default function LoginScreen() {
                 <TouchableOpacity
                     style={styles.primaryButton}
                     onPress={onPressVoirPokemon}
+                    disabled={loading}
                 >
                     <Text style={styles.primaryButtonText}>Voir les Pokémon</Text>
                 </TouchableOpacity>
@@ -117,7 +128,7 @@ const styles = StyleSheet.create({
     subtitle: {
         fontSize: 16,
         color: '#5c5e66',
-        marginBottom: 22,
+        marginBottom: 20,
         textAlign: 'center',
     },
     primaryButton: {
