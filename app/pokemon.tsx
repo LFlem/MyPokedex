@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface PokemonListItem {
   name: string;
@@ -51,13 +51,16 @@ export default function PokemonScreen() {
     const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
 
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => router.push(`/${item.name}`)}
+      >
         <Image
           source={{ uri: imageUrl }}
           style={styles.image}
         />
         <Text style={styles.name}>{item.name}</Text>
-      </View>
+      </TouchableOpacity>
     );
 
   }
@@ -70,7 +73,7 @@ export default function PokemonScreen() {
       <FlatList
         data={pokemons}
         keyExtractor={(item) => item.name}
-        numColumns={2}
+        numColumns={3}
         renderItem={renderItem}
         onEndReached={fetchPokemon}
         onEndReachedThreshold={0.5}
